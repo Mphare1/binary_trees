@@ -7,13 +7,13 @@
  */
 size_t binary_tree_height(const binary_tree_t *tree)
 {
-	if (tree == NULL)
-		return (0);
+    if (tree == NULL)
+        return (0);
 
-	size_t left_height = binary_tree_height(tree->left);
-	size_t right_height = binary_tree_height(tree->right);
+    size_t left_height = binary_tree_height(tree->left);
+    size_t right_height = binary_tree_height(tree->right);
 
-	return (1 + (left_height > right_height ? left_height : right_height));
+    return (1 + (left_height > right_height ? left_height : right_height));
 }
 
 /**
@@ -23,29 +23,27 @@ size_t binary_tree_height(const binary_tree_t *tree)
  */
 int binary_tree_is_perfect(const binary_tree_t *tree)
 {
-	size_t height = binary_tree_height(tree);
-	int result = 1;
+    if (tree == NULL)
+        return (0);
 
-	if (tree == NULL)
-		return (0);
+    /* Calculate the height of the left and right subtrees */
+    size_t left_height = binary_tree_height(tree->left);
+    size_t right_height = binary_tree_height(tree->right);
 
-	/* Helper function to perform level-order traversal */
-	void level_order(const binary_tree_t *node, size_t current_level)
-	{
-		if (node == NULL)
-			return;
+    /* Check if it's a leaf node (perfect by definition) */
+    if (tree->left == NULL && tree->right == NULL)
+        return (1);
 
-		if (current_level == height - 1 && (node->left || node->right))
-		{
-			result = 0;
-			return;
-		}
+    /* Check if internal node has two children and their heights match */
+    if (tree->left != NULL && tree->right != NULL &&
+        left_height == right_height)
+    {
+        /* Recursively check left and right subtrees */
+        int left_perfect = binary_tree_is_perfect(tree->left);
+        int right_perfect = binary_tree_is_perfect(tree->right);
 
-		level_order(node->left, current_level + 1);
-		level_order(node->right, current_level + 1);
-	}
+        return (left_perfect && right_perfect);
+    }
 
-	level_order(tree, 0);
-
-	return result;
+    return (0); /* Not perfect if any condition fails */
 }
